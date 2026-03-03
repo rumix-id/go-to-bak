@@ -1,40 +1,46 @@
-# GTB Renamer - Extension Utility
+# 🛠️ GTB Renamer - Extension Utility
 
-GTB Renamer is a CLI (Command Line Interface)-based tool designed to easily change file extensions and restore them to their original format. This tool is especially useful for developers or users who frequently require the protection of temporary files using the `.bak` extension.
+Go To Bak Renamer is a CLI (Command Line Interface)-based tool designed to quickly change file extensions and restore them to their original format. It's especially useful for temporary file management or securing data using the `.bak` extension.
 
-## ⚙️ Key Features
 
-* **Bulk Change to .bak**: Converts all files with a specific extension to `.bak` in a folder (including subfolders).
-* **Auto Restore .bak**: Automatically restores `.bak` files to their original extensions.
+## ✨ Key Features
+
+* **Bulk Change to .bak**: Converts all files with a specific extension to `.bak` in a folder and subfolders.
+* **Auto Restore .bak**: Automatically restores files ending in `.bak` to their original extensions.
 * **Advanced Menu**: Custom feature to change any extension to another extension of your choice.
-* **Persistent History**: Remembers the history of recent changes using the `history.json` file so you can restore even after the application has been closed.
+* **Persistent History**: Remembers the history of recent changes using the `history.json` file so you can restore them even after the application has been closed.
 * **Folder Summary**: Displays a summary of the number and type of file extensions contained in a folder before processing.
+
 
 ## 🚀 Line Method (Source Code)
 
 1. Make sure you have Python 3.x installed.
-2. Run the following command to run the script:
-``` bash
+2. Run the following command in the terminal to run the script:
+
+bash
 python gtb-renamer.py
 
-🛠️ Cara Kompilasi ke .exe (Nuitka)
-Jika Anda ingin membuat file executable tunggal yang ukurannya kecil dan memiliki metadata Windows:
 
-Install Nuitka:
+## 🛠️ How to Compile to .exe (Nuitka)
 
-Bash
+If you want to create a single executable file that is small in size and has Windows metadata:
+
+## 1. Install Nuitka
+Open a terminal and run:
+```python
 pip install nuitka
-Pastikan Anda memiliki compiler MinGW64/GCC dan UPX di sistem Anda.
+```
+## 2. Compiler Preparation
+Make sure you have the MinGW64/GCC and UPX compilers installed on your system to minimize the maximum file size.
+## 3. Run the Compilation
+Simply double-click the compile.bat file in this folder. The compiled file will appear as gtb-renamer.exe.
 
-Klik dua kali pada file compile.bat yang tersedia di folder ini.
+### 📦 Folder Structure
 
-Hasil kompilasi akan muncul sebagai gtb-renamer.exe.
-
-📦 Struktur Folder
-gtb-renamer.py: Script utama aplikasi.
-
-compile.bat: Batch script untuk kompilasi otomatis menggunakan Nuitka.
-
-version.txt: Metadata aplikasi (Company Name, Version, dll).
-
-icon.ico: Ikon aplikasi untuk file .exe.
+```text
+.
+├── icon.ico       # Application icon for .exe files
+├── compile.bat    # Batch script for automatic compilation
+├── gtb-renamer.py # Main application script
+├── version.txt    # Application metadata (Company, Version, etc.)
+└── README.md      # Project documentation
