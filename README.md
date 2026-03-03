@@ -16,3 +16,25 @@ GTB Renamer is a CLI (Command Line Interface)-based tool designed to easily chan
 2. Run the following command to run the script:
 ``` bash
 python gtb-renamer.py
+
+🛠️ Cara Kompilasi ke .exe (Nuitka)
+Jika Anda ingin membuat file executable tunggal yang ukurannya kecil dan memiliki metadata Windows:
+
+Install Nuitka:
+
+Bash
+pip install nuitka
+Pastikan Anda memiliki compiler MinGW64/GCC dan UPX di sistem Anda.
+
+Klik dua kali pada file compile.bat yang tersedia di folder ini.
+
+Hasil kompilasi akan muncul sebagai gtb-renamer.exe.
+
+📦 Struktur Folder
+gtb-renamer.py: Script utama aplikasi.
+
+compile.bat: Batch script untuk kompilasi otomatis menggunakan Nuitka.
+
+version.txt: Metadata aplikasi (Company Name, Version, dll).
+
+icon.ico: Ikon aplikasi untuk file .exe.
