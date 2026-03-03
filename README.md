@@ -19,7 +19,7 @@ python gtb-renamer.py
 
 
 
-##Bahasa Indonesia
+#Bahasa Indonesia
 # GTB Renamer - Extension Utility
 
 **GTB Renamer** adalah alat berbasis CLI (Command Line Interface) yang dirancang untuk mengubah ekstensi file secara massal dan mengembalikannya (*restore*) ke format asli dengan sangat mudah. Tool ini sangat berguna bagi pengembang atau pengguna yang sering berurusan dengan pengamanan file sementara menggunakan ekstensi `.bak`.
