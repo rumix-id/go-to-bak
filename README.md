@@ -30,9 +30,13 @@ Open a terminal and run:
 ```python
 pip install nuitka
 ```
-## 2. Compiler Preparation
+## 2.Install Library
+```python
+pip install pywin32
+```
+## 3. Compiler Preparation
 Make sure you have the MinGW64/GCC and UPX compilers installed on your system to minimize the maximum file size.
-## 3. Run the Compilation
+## 4. Run the Compilation
 Simply double-click the compile.bat file in this folder. The compiled file will appear as gtb-renamer.exe.
 
 ### 📦 Folder Structure
