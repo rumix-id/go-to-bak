@@ -1,8 +1,8 @@
 @echo off
 title Nuitka Compiler - Rumix Tools
-echo Memulai proses kompilasi gtb-renamer.py...
-echo Harap tunggu, proses ini memakan waktu beberapa menit.
-echo.
+echo Starting the compilation process for gtb-renamer.py...
+echo Please wait, this process may take a few minutes.
+echo
 
 python -m nuitka ^
     --standalone ^
@@ -21,5 +21,5 @@ python -m nuitka ^
     gtb-renamer.py
 
 echo.
-echo Kompilasi Selesai! Cek file gtb-renamer.exe
+echo Compilation Complete! Check the gtb-renamer.exe file.
 pause

@@ -1,8 +1,8 @@
 import os
-import tkinter as tk
-from tkinter import filedialog
+import json
 from collections import defaultdict
-import json  # Tambahan untuk menangani file history
+from pathlib import Path
+import win32com.client  # Library native Windows untuk explorer yang lebih ringan
 
 GREEN = "\033[92m"
 RED = "\033[91m"
@@ -19,21 +19,25 @@ HISTORY_FILE = "history.json"
 
 def save_history(data, new_ext):
     """Menyimpan map ekstensi ke file JSON"""
-    history = {
-        "extension_map": data,
-        "last_new_extension": new_ext
-    }
-    with open(HISTORY_FILE, "w") as f:
-        json.dump(history, f)
+    try:
+        history = {
+            "extension_map": data,
+            "last_new_extension": new_ext
+        }
+        with open(HISTORY_FILE, "w") as f:
+            json.dump(history, f)
+    except Exception:
+        pass
 
 def load_history():
     """Memuat riwayat dari file JSON jika ada"""
-    if os.path.exists(HISTORY_FILE):
+    h_path = Path(HISTORY_FILE)
+    if h_path.exists():
         try:
-            with open(HISTORY_FILE, "r") as f:
+            with open(h_path, "r") as f:
                 history = json.load(f)
                 return history.get("extension_map", {}), history.get("last_new_extension", "")
-        except:
+        except (json.JSONDecodeError, IOError):
             return {}, ""
     return {}, ""
 
@@ -41,11 +45,10 @@ def load_history():
 # GLOBAL STORAGE (LOAD FROM HISTORY)
 # =========================
 
-# Mengisi data global saat program dijalankan
 last_extension_map, last_new_extension = load_history()
 
 # =========================
-# UI UTILITIES (TETAP SAMA)
+# UI UTILITIES
 # =========================
 
 def clear():
@@ -64,19 +67,17 @@ def banner():
     Change & Restore Multi Extension Files
     """)
 
-# ... (Fungsi print_total_folder_summary, menu, advanced_menu, pick_folder, scan_files tetap sama) ...
-
 def print_total_folder_summary(root_path):
+    """Menghitung total file berdasarkan ekstensi secara efisien"""
     counter = defaultdict(int)
     total_files = 0
-    for root, dirs, files in os.walk(root_path):
-        for file in files:
+    # Menggunakan rglob agar pemindaian lebih cepat dan modern
+    for p in Path(root_path).rglob('*'):
+        if p.is_file():
             total_files += 1
-            if "." in file:
-                ext = file.rsplit(".", 1)[-1].lower()
-            else:
-                ext = "no_extension"
+            ext = p.suffix.lower().replace(".", "") if p.suffix else "no_extension"
             counter[ext] += 1
+            
     print(f"Total Files: {total_files}")
     print("\n===========================================")
     print("Total File In Folder")
@@ -119,25 +120,31 @@ def advanced_menu():
             print(f"{REDF}Input not valid.{RESET}")
 
 def pick_folder():
-    root = tk.Tk()
-    root.withdraw()
-    root.attributes('-topmost', True)
-    folder = filedialog.askdirectory(title="Select Folder Target")
-    root.destroy()
-    return folder
+    """Membuka folder explorer menggunakan Windows Shell (Native & Ringan)"""
+    print("Open file explorer - wait...")
+    try:
+        shell = win32com.client.Dispatch("Shell.Application")
+        # Parameter: (Hwnd, Title, Options, RootFolder)
+        folder = shell.BrowseForFolder(0, "Select Folder Target", 0, 0)
+        if folder:
+            return folder.Self.Path
+        return None
+    except Exception:
+        # Jika win32com gagal, fallback ke input manual agar program tidak mati
+        path_input = input(f"\n{YELLOW}Paste folder path manual:{RESET} ").strip().strip('"')
+        return path_input if os.path.isdir(path_input) else None
 
 def scan_files(root_path, extensions):
+    """Mencari file berdasarkan list ekstensi"""
+    root = Path(root_path)
     matched = []
-    for root, dirs, files in os.walk(root_path):
-        for file in files:
-            if "." in file:
-                ext = file.rsplit(".", 1)[-1].lower()
-                if ext in extensions:
-                    matched.append(os.path.join(root, file))
+    for ext in extensions:
+        # Scan hanya file dengan ekstensi yang diminta
+        matched.extend(root.rglob(f"*.{ext}"))
     return matched
 
 # =========================
-# ADVANCED LOGIC (MODIFIED TO SAVE HISTORY)
+# ADVANCED LOGIC
 # =========================
 
 def advanced():
@@ -145,22 +152,23 @@ def advanced():
     choice = advanced_menu()
     if choice == 0: return
 
-    print("Open file explorer - wait...")
-    folder = pick_folder()
-    if not folder:
+    folder_str = pick_folder()
+    if not folder_str:
         print("Folder not select.")
         input("Press Enter to return...")
         advanced()
         return
 
-    print_total_folder_summary(folder)
-    print(f"\nTarget Folder:\n{YELLOW}{folder}{RESET}\n")
+    print_total_folder_summary(folder_str)
+    print(f"\nTarget Folder:\n{YELLOW}{folder_str}{RESET}\n")
 
     if choice == 1:
         old_ext = input("Enter extensions single or multi to changes (example: dll txt dat): ").strip()
+        # Membersihkan input ekstensi
         extensions = [e.lower().replace(".", "") for e in old_ext.replace(",", " ").split()]
         new_ext = input("Enter new extension (without dot): ").strip().replace(".", "")
-        files = scan_files(folder, extensions)
+        
+        files = scan_files(folder_str, extensions)
 
         if not files:
             print(f"{RED}Extensions not found.{RESET}")
@@ -170,17 +178,20 @@ def advanced():
             changed_ext = set()
             last_extension_map = {}
 
-            for file in files:
-                old_extension = file.rsplit(".", 1)[-1].lower()
-                base = file.rsplit(".", 1)[0]
-                new_file = base + "." + new_ext
-                os.rename(file, new_file)
-                last_extension_map[new_file] = old_extension
-                changed_ext.add(old_extension)
-                total += 1
+            for file_path in files:
+                try:
+                    new_file = file_path.with_suffix(f".{new_ext}")
+                    # Cek agar tidak menimpa file yang sudah ada
+                    if not new_file.exists():
+                        old_extension_clean = file_path.suffix.lower().replace(".", "")
+                        file_path.rename(new_file)
+                        last_extension_map[str(new_file)] = old_extension_clean
+                        changed_ext.add(old_extension_clean)
+                        total += 1
+                except Exception:
+                    continue
 
             last_new_extension = new_ext
-            # Simpan ke file agar tidak hilang saat aplikasi ditutup
             save_history(last_extension_map, last_new_extension)
 
             print("Done.\n")
@@ -196,13 +207,17 @@ def advanced():
             print("\nScanning extensions - wait...\nProcessing...")
             total = 0
             restored_ext = set()
-            for file_path, original_ext in last_extension_map.items():
-                if os.path.exists(file_path):
-                    base = file_path.rsplit(".", 1)[0]
-                    restored_file = base + "." + original_ext
-                    os.rename(file_path, restored_file)
-                    restored_ext.add(original_ext)
-                    total += 1
+            for file_str, original_ext in last_extension_map.items():
+                file_path = Path(file_str)
+                if file_path.exists():
+                    try:
+                        restored_file = file_path.with_suffix(f".{original_ext}")
+                        if not restored_file.exists():
+                            file_path.rename(restored_file)
+                            restored_ext.add(original_ext)
+                            total += 1
+                    except Exception:
+                        continue
 
             print("Done.\n")
             print(f"Total files changes: {total}")
@@ -210,14 +225,19 @@ def advanced():
                 print(f"Restored {GREEN}[.{last_new_extension}]{RESET} to {GREEN}[.{ext}]{RESET}")
             print(f"\nStatus: {GREEN}RESTORE SUCCESS{RESET}")
             
-            # Hapus history setelah berhasil restore
+            # Reset history setelah restore berhasil
             last_extension_map.clear()
-            if os.path.exists(HISTORY_FILE): os.remove(HISTORY_FILE)
+            h_file = Path(HISTORY_FILE)
+            if h_file.exists():
+                try: h_file.unlink()
+                except: pass
 
     input("\nPress Enter to return to Advanced Menu...")
     advanced()
 
-# ... (Fungsi main tetap sama) ...
+# =========================
+# MAIN LOGIC
+# =========================
 
 def main():
     choice = menu()
@@ -227,32 +247,37 @@ def main():
         main()
         return
 
-    print("\nOpen file explorer - wait...")
-    folder = pick_folder()
-    if not folder:
+    folder_str = pick_folder()
+    if not folder_str:
         print(f"{RED}Folder not select.{RESET}")
         input("Press Enter to return to menu...")
         main()
         return
 
-    print_total_folder_summary(folder)
-    print(f"\nTarget Folder:\n{YELLOW}{folder}{RESET}\n")
+    print_total_folder_summary(folder_str)
+    print(f"\nTarget Folder:\n{YELLOW}{folder_str}{RESET}\n")
 
     if choice == 1:
         ext_input = input("Enter extensions single or multi to changes (example: dll txt dat): ").strip()
         extensions = [e.lower().replace(".", "") for e in ext_input.replace(",", " ").split()]
-        files = scan_files(folder, extensions)
+        files = scan_files(folder_str, extensions)
+        
         if not files:
             print(f"{RED}Extensions not found.{RESET}")
         else:
             print("\nScanning extensions - wait...\nProcessing...")
             total = 0
             changed_ext = set()
-            for file in files:
-                ext = file.rsplit(".", 1)[-1].lower()
-                os.rename(file, file + ".bak")
-                changed_ext.add(ext)
-                total += 1
+            for file_path in files:
+                try:
+                    new_path = Path(str(file_path) + ".bak")
+                    if not new_path.exists():
+                        ext = file_path.suffix.lower().replace(".", "")
+                        file_path.rename(new_path)
+                        changed_ext.add(ext)
+                        total += 1
+                except Exception:
+                    continue
             print("Done.\n")
             print(f"Total files changes: {total}")
             for ext in sorted(changed_ext):
@@ -263,16 +288,19 @@ def main():
         print("\nScanning extensions - wait...\nProcessing...")
         total = 0
         restored_ext = set()
-        for root, dirs, files in os.walk(folder):
-            for file in files:
-                if file.endswith(".bak"):
-                    full = os.path.join(root, file)
-                    original = file[:-4]
-                    if "." in original:
-                        ext = original.rsplit(".", 1)[-1].lower()
-                        restored_ext.add(ext)
-                    os.rename(full, os.path.join(root, original))
+        # Scan khusus file .bak untuk efisiensi
+        for bak_file in Path(folder_str).rglob("*.bak"):
+            try:
+                # Mengembalikan nama file sebelum .bak
+                original_path = bak_file.with_name(bak_file.name[:-4])
+                if not original_path.exists():
+                    if original_path.suffix:
+                        restored_ext.add(original_path.suffix.lower().replace(".", ""))
+                    bak_file.rename(original_path)
                     total += 1
+            except Exception:
+                continue
+                
         print("Done.\n")
         print(f"Total files changes: {total}")
         for ext in sorted(restored_ext):
