@@ -13,9 +13,9 @@ python -m nuitka ^
     --windows-icon-from-ico="icon.ico" ^
     --windows-company-name="Rumix Tools" ^
     --windows-file-description="Go To BAK File Utility" ^
-    --windows-file-version="1.0.0" ^
+    --windows-file-version="2.0.0" ^
     --windows-product-name="Extension Utility" ^
-    --windows-product-version="1.0.0" ^
+    --windows-product-version="2.0.0" ^
     --remove-output ^
     --assume-yes-for-downloads ^
     gtb-renamer.py
