@@ -36,7 +36,9 @@ pip install pywin32
 ```
 ## 3. Compiler Preparation
 Make sure you have the MinGW64/GCC and UPX compilers installed on your system to minimize the maximum file size.
-## 4. Run the Compilation
+## 4. Download UPX
+Download upx, then put it here with the name upx, not anything else.
+## 5. Run the Compilation
 Simply double-click the compile.bat file in this folder. The compiled file will appear as gtb-renamer.exe.
 
 ### 📦 Folder Structure
@@ -46,6 +48,6 @@ Simply double-click the compile.bat file in this folder. The compiled file will 
 ├── icon.ico       # Application icon for .exe files
 ├── compile.bat    # Batch script for automatic compilation
 ├── gtb-renamer.py # Main application script
-├── upx            # Download upx, then put it here with the name upx, not anything else.
+├── upx            # The upx folder should be placed here
 ├── version.txt    # Application metadata (Company, Version, etc.)
 └── README.md      # Project documentation
