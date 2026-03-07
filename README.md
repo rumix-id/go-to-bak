@@ -37,7 +37,7 @@ pip install pywin32
 ## 3. Compiler Preparation
 Make sure you have the MinGW64/GCC and UPX compilers installed on your system to minimize the maximum file size.
 ## 4. Download UPX
-[Download upx](https://upx.github.io/), then put it here with the name upx, not anything else.
+[Download upx](https://upx.github.io/), then create a folder according to the given structure with the name upx, not anything else.
 ## 5. Run the Compilation
 Simply double-click the compile.bat file in this folder. The compiled file will appear as gtb-renamer.exe.
 
