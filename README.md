@@ -46,5 +46,6 @@ Simply double-click the compile.bat file in this folder. The compiled file will 
 ├── icon.ico       # Application icon for .exe files
 ├── compile.bat    # Batch script for automatic compilation
 ├── gtb-renamer.py # Main application script
+├── upx            # Download upx, then put it here with the name upx, not anything else.
 ├── version.txt    # Application metadata (Company, Version, etc.)
 └── README.md      # Project documentation
