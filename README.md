@@ -41,7 +41,7 @@ Make sure you have the MinGW64/GCC and UPX compilers installed on your system to
 ## 5. Run the Compilation
 Simply double-click the compile.bat file in this folder. The compiled file will appear as gtb-renamer.exe.
 
-### 📦 Folder Structure
+### 📂 Folder Structure
 
 ```text
 .
