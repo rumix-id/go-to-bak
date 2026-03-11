@@ -17,9 +17,9 @@ Go To Bak Renamer is a CLI (Command Line Interface)-based tool designed to quick
 1. Make sure you have Python 3.x installed.
 2. Run the following command in the terminal to run the script:
 
-bash
+```bash
 python gtb-renamer.py
-
+```
 
 ## 🛠️ How to Compile to .exe (Nuitka)
 
