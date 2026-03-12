@@ -1,7 +1,7 @@
 # 🛠️ GTB Renamer - Extension Utility
 
 Go To Bak Renamer is a CLI (Command Line Interface)-based tool designed to quickly change file extensions and restore them to their original format. It's especially useful for temporary file management or securing data using the `.bak` extension.
-
+---
 ![go-to-bak Demo](screenshots/gtb-renamer.gif)
 
 ## ✨ Key Features
