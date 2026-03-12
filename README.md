@@ -30,7 +30,7 @@ If you want to create a single executable file that is small in size and has Win
 Make sure you have the MinGW64/GCC and UPX compilers installed on your system to minimize the maximum file size.
 ## 2. Download UPX
 [Download upx](https://upx.github.io/), then create a folder according to the given structure with the name upx, not anything else.
-## 5. Run the Compilation
+## 3. Run the Compilation
 Simply double-click the compile.bat file in this folder. The compiled file will appear as gtb-renamer.exe.
 
 ### 📂 Folder Structure
