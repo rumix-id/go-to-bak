@@ -22,22 +22,13 @@ Go To Bak Renamer is a CLI (Command Line Interface)-based tool designed to quick
 python gtb-renamer.py
 ```
 
-## 🛠️ How to Compile to .exe (Nuitka)
+## 🛠️ How to Compile to .exe
 
 If you want to create a single executable file that is small in size and has Windows metadata:
 
-## 1. Install Nuitka
-Open a terminal and run:
-```python
-pip install nuitka
-```
-## 2.Install Library
-```python
-pip install pywin32
-```
-## 3. Compiler Preparation
+## 1. Compiler Preparation
 Make sure you have the MinGW64/GCC and UPX compilers installed on your system to minimize the maximum file size.
-## 4. Download UPX
+## 2. Download UPX
 [Download upx](https://upx.github.io/), then create a folder according to the given structure with the name upx, not anything else.
 ## 5. Run the Compilation
 Simply double-click the compile.bat file in this folder. The compiled file will appear as gtb-renamer.exe.
@@ -46,9 +37,9 @@ Simply double-click the compile.bat file in this folder. The compiled file will 
 
 ```text
 .
-├── icon.ico       # Application icon for .exe files
-├── compile.bat    # Batch script for automatic compilation
-├── gtb-renamer.py # Main application script
-├── upx            # The upx folder should be placed here
-├── version.txt    # Application metadata (Company, Version, etc.)
-└── README.md      # Project documentation
+├── icon.ico              # Application icon for .exe files
+├── compile-to-exe.bat    # Batch script for automatic compilation
+├── gtb-renamer.py        # Main application script
+├── upx                   # The upx folder should be placed here
+├── version.txt           # Application metadata (Company, Version, etc.)
+└── README.md             # Project documentation
